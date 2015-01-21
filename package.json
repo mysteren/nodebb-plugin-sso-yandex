@@ -1,16 +1,16 @@
 {
-  "name": "nodebb-plugin-sso-google",
-  "version": "0.4.3",
-  "description": "NodeBB Google SSO",
+  "name": "nodebb-plugin-sso-yandex",
+  "version": "1.0.0",
+  "description": "NodeBB Yandex SSO",
   "main": "library.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/julianlam/nodebb-plugin-sso-google"
+    "url": "https://github.com/julianlam/nodebb-plugin-sso-yandex"
   },
   "keywords": [
     "nodebb",
     "plugin",
-    "google",
+    "yandex",
     "sso",
     "single sign on",
     "registration"
@@ -21,12 +21,12 @@
   },
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/julianlam/nodebb-plugin-sso-google/issues"
+    "url": "https://github.com/julianlam/nodebb-plugin-sso-yandex/issues"
   },
   "readme": "",
   "readmeFilename": "README.md",
   "dependencies": {
-    "passport-google-oauth": "~0.1.5"
+    "passport-yandex": "^0.0.2"
   },
   "nbbpm": {
     "compatibility": "^0.6.0"

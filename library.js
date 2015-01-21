@@ -1,46 +1,45 @@
 (function(module) {
-	"use strict";
+	'use strict';
+	/* globals require, module */
 
 	var User = module.parent.require('./user'),
 		meta = module.parent.require('./meta'),
 		db = module.parent.require('../src/database'),
 		passport = module.parent.require('passport'),
-  		passportGoogle = require('passport-google-oauth').OAuth2Strategy,
-  		fs = module.parent.require('fs'),
-  		path = module.parent.require('path'),
+  		passportYandex = require('passport-yandex').Strategy,
   		nconf = module.parent.require('nconf'),
         async = module.parent.require('async');
 
 	var constants = Object.freeze({
-		'name': "Google",
+		'name': 'Yandex',
 		'admin': {
-			'route': '/plugins/sso-google',
-			'icon': 'fa-google-plus-square'
+			'route': '/plugins/sso-yandex',
+			'icon': 'fa-key'
 		}
 	});
 
-	var Google = {};
+	var Yandex = {};
 
-	Google.init = function(data, callback) {
+	Yandex.init = function(data, callback) {
 		function render(req, res, next) {
-			res.render('admin/plugins/sso-google', {});
+			res.render('admin/plugins/sso-yandex', {});
 		}
 
-		data.router.get('/admin/plugins/sso-google', data.middleware.admin.buildHeader, render);
-		data.router.get('/api/admin/plugins/sso-google', render);
+		data.router.get('/admin/plugins/sso-yandex', data.middleware.admin.buildHeader, render);
+		data.router.get('/api/admin/plugins/sso-yandex', render);
 
 		callback();
-	}
+	};
 
-	Google.getStrategy = function(strategies, callback) {
-		meta.settings.get('sso-google', function(err, settings) {
-			if (!err && settings['id'] && settings['secret']) {
-				passport.use(new passportGoogle({
-					clientID: settings['id'],
-					clientSecret: settings['secret'],
-					callbackURL: nconf.get('url') + '/auth/google/callback'
+	Yandex.getStrategy = function(strategies, callback) {
+		meta.settings.get('sso-yandex', function(err, settings) {
+			if (!err && settings.id && settings.secret) {
+				passport.use(new passportYandex({
+					clientID: settings.id,
+					clientSecret: settings.secret,
+					callbackURL: nconf.get('url') + '/auth/yandex/callback'
 				}, function(accessToken, refreshToken, profile, done) {
-					Google.login(profile.id, profile.displayName, profile.emails[0].value, profile._json.picture, function(err, user) {
+					Yandex.login(profile.id, profile.displayName, profile.emails[0].value, 'https://avatars.yandex.net/get-yapic/' + profile._json.default_avatar_id + '/islands-retina-50', function(err, user) {
 						if (err) {
 							return done(err);
 						}
@@ -49,11 +48,11 @@
 				}));
 
 				strategies.push({
-					name: 'google',
-					url: '/auth/google',
-					callbackURL: '/auth/google/callback',
-					icon: 'fa-google-plus-square',
-					scope: 'https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email'
+					name: 'yandex',
+					url: '/auth/yandex',
+					callbackURL: '/auth/yandex/callback',
+					icon: 'fa-key'
+					// scope: 'https://www.yandexapis.com/auth/userinfo.profile https://www.yandexapis.com/auth/userinfo.email'
 				});
 			}
 
@@ -61,8 +60,8 @@
 		});
 	};
 
-	Google.login = function(gplusid, handle, email, picture, callback) {
-		Google.getUidByGoogleId(gplusid, function(err, uid) {
+	Yandex.login = function(yandexid, handle, email, picture, callback) {
+		Yandex.getUidByYandexId(yandexid, function(err, uid) {
 			if(err) {
 				return callback(err);
 			}
@@ -75,9 +74,9 @@
 			} else {
 				// New User
 				var success = function(uid) {
-					// Save google-specific information to the user
-					User.setUserField(uid, 'gplusid', gplusid);
-					db.setObjectField('gplusid:uid', gplusid, uid);
+					// Save yandex-specific information to the user
+					User.setUserField(uid, 'yandexid', yandexid);
+					db.setObjectField('yandexid:uid', yandexid, uid);
 					
 					// Save their photo, if present
 					if (picture) {
@@ -111,8 +110,8 @@
 		});
 	};
 
-	Google.getUidByGoogleId = function(gplusid, callback) {
-		db.getObjectField('gplusid:uid', gplusid, function(err, uid) {
+	Yandex.getUidByYandexId = function(yandexid, callback) {
+		db.getObjectField('yandexid:uid', yandexid, function(err, uid) {
 			if (err) {
 				return callback(err);
 			}
@@ -120,7 +119,7 @@
 		});
 	};
 
-	Google.addMenuItem = function(custom_header, callback) {
+	Yandex.addMenuItem = function(custom_header, callback) {
 		custom_header.authentication.push({
 			"route": constants.admin.route,
 			"icon": constants.admin.icon,
@@ -130,20 +129,20 @@
 		callback(null, custom_header);
 	}
 
-	Google.deleteUserData = function(uid, callback) {
+	Yandex.deleteUserData = function(uid, callback) {
 		async.waterfall([
-			async.apply(user.getUserField, uid, 'gplusid'),
+			async.apply(user.getUserField, uid, 'yandexid'),
 			function(oAuthIdToDelete, next) {
-				db.deleteObjectField('gplusid:uid', oAuthIdToDelete, next);
+				db.deleteObjectField('yandexid:uid', oAuthIdToDelete, next);
 			}
 		], function(err) {
 			if (err) {
-				winston.error('[sso-google] Could not remove OAuthId data for uid ' + uid + '. Error: ' + err);
+				winston.error('[sso-yandex] Could not remove OAuthId data for uid ' + uid + '. Error: ' + err);
 				return callback(err);
 			}
 			callback(null, uid);
 		});
 	};
 
-	module.exports = Google;
+	module.exports = Yandex;
 }(module));

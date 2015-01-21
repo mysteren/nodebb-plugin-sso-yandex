@@ -1,8 +1,8 @@
 {
-	"id": "nodebb-plugin-sso-google",
-	"name": "NodeBB Google SSO",
-	"description": "NodeBB Plugin that allows users to login/register via their Google account.",
-	"url": "https://github.com/julianlam/nodebb-plugin-sso-google",
+	"id": "nodebb-plugin-sso-yandex",
+	"name": "NodeBB Yandex SSO",
+	"description": "NodeBB Plugin that allows users to login/register via their Yandex account.",
+	"url": "https://github.com/julianlam/nodebb-plugin-sso-yandex",
 	"library": "./library.js",
 	"templates": "templates",
 	"hooks": [
