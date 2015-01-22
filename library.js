@@ -131,7 +131,7 @@
 
 	Yandex.deleteUserData = function(uid, callback) {
 		async.waterfall([
-			async.apply(user.getUserField, uid, 'yandexid'),
+			async.apply(User.getUserField, uid, 'yandexid'),
 			function(oAuthIdToDelete, next) {
 				db.deleteObjectField('yandexid:uid', oAuthIdToDelete, next);
 			}
