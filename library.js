@@ -18,7 +18,17 @@
 		}
 	});
 
-	var Yandex = {};
+	var Yandex = {
+		settings: undefined
+	};
+
+	Yandex.preinit = function(data, callback) {
+		// Settings
+		meta.settings.get('sso-yandex', function(err, settings) {
+			Yandex.settings = settings;
+			callback(null, data);
+		});
+	};
 
 	Yandex.init = function(data, callback) {
 		function render(req, res, next) {
@@ -77,6 +87,8 @@
 					// Save yandex-specific information to the user
 					User.setUserField(uid, 'yandexid', yandexid);
 					db.setObjectField('yandexid:uid', yandexid, uid);
+					var autoConfirm = Yandex.settings && Yandex.settings.autoconfirm === "on" ? 1: 0;
+					User.setUserField(uid, 'email:confirmed', autoConfirm);
 					
 					// Save their photo, if present
 					if (picture) {
