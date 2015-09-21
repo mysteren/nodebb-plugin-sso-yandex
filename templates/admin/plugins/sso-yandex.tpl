@@ -20,19 +20,21 @@
 					<p class="help-block">
 						The appropriate "Redirect URI" is your NodeBB's URL with `/auth/yandex/callback` appended to it.
 					</p>
+					<div class="checkbox">
+						<label for="showSiteTitle" class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
+							<input type="checkbox" class="mdl-switch__input" id="showSiteTitle" name="autoconfirm" />
+							<span class="mdl-switch__label">Skip email verification for people who register using SSO?</span>
+						</label>
+					</div>
 				</form>
 			</div>
 		</div>
 	</div>
-	<div class="col-lg-3">
-		<div class="panel panel-default">
-			<div class="panel-heading">Control Panel</div>
-			<div class="panel-body">
-				<button class="btn btn-primary" id="save">Save Settings</button>
-			</div>
-		</div>
-	</div>
 </div>
+
+<button id="save" class="floating-button mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored">
+	<i class="material-icons">save</i>
+</button>
 
 <script>
 	require(['settings'], function(Settings) {
