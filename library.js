@@ -10,26 +10,6 @@
   		nconf = module.parent.require('nconf'),
         async = module.parent.require('async');
 
-	var constants = Object.freeze({
-		'name': 'Yandex',
-		'admin': {
-			'route': '/plugins/sso-yandex',
-			'icon': 'fa-key'
-		}
-	});
-
-	var Yandex = {
-		settings: undefined
-	};
-
-	Yandex.preinit = function(data, callback) {
-		// Settings
-		meta.settings.get('sso-yandex', function(err, settings) {
-			Yandex.settings = settings;
-			callback(null, data);
-		});
-	};
-
 	Yandex.init = function(data, callback) {
 		function render(req, res, next) {
 			res.render('admin/plugins/sso-yandex', {});
@@ -61,7 +41,7 @@
 					name: 'yandex',
 					url: '/auth/yandex',
 					callbackURL: '/auth/yandex/callback',
-					icon: 'fa-key'
+					icon: 'icon-yandex'
 					// scope: 'https://www.yandexapis.com/auth/userinfo.profile https://www.yandexapis.com/auth/userinfo.email'
 				});
 			}
@@ -84,20 +64,22 @@
 			} else {
 				// New User
 				var success = function(uid) {
-					// Save yandex-specific information to the user
-					User.setUserField(uid, 'yandexid', yandexid);
-					db.setObjectField('yandexid:uid', yandexid, uid);
-					var autoConfirm = Yandex.settings && Yandex.settings.autoconfirm === "on" ? 1: 0;
-					User.setUserField(uid, 'email:confirmed', autoConfirm);
-					
-					// Save their photo, if present
-					if (picture) {
-						User.setUserField(uid, 'uploadedpicture', picture);
-						User.setUserField(uid, 'picture', picture);
-					}
-					
-					callback(null, {
-						uid: uid
+					meta.settings.get('sso-yandex', function(err, settings) {
+						var autoConfirm = settings && settings['autoconfirm'] === "on" ? 1 : 0;
+						User.setUserField(uid, 'email:confirmed', autoConfirm);
+						// Save yandex-specific information to the user
+						User.setUserField(uid, 'yandexid', yandexid);
+						db.setObjectField('yandexid:uid', yandexid, uid);
+						
+						// Save their photo, if present
+						if (picture) {
+							User.setUserField(uid, 'uploadedpicture', picture);
+							User.setUserField(uid, 'picture', picture);
+						}
+						
+						callback(null, {
+							uid: uid
+						});
 					});
 				};
 
