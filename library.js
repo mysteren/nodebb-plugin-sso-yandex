@@ -10,6 +10,14 @@
   		nconf = module.parent.require('nconf'),
         async = module.parent.require('async');
     
+    var constants = Object.freeze({
+		'name': "Yandex",
+		'admin': {
+			'route': '/plugins/sso-yandex',
+			'icon': 'icon-yandex'
+		}
+	});
+    
     var Yandex = {};
     
 	Yandex.init = function(data, callback) {
