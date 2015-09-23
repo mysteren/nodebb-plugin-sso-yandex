@@ -24,7 +24,7 @@
     "url": "https://github.com/julianlam/nodebb-plugin-sso-yandex/issues"
   },
   "dependencies": {
-    "passport-yandex": "^0.0.2"
+    "passport-yandex": "^0.0.3"
   },
   "nbbpm": {
     "compatibility": "^0.6.0"
