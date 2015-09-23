@@ -9,7 +9,9 @@
   		passportYandex = require('passport-yandex').Strategy,
   		nconf = module.parent.require('nconf'),
         async = module.parent.require('async');
-
+    
+    var Yandex = {};
+    
 	Yandex.init = function(data, callback) {
 		function render(req, res, next) {
 			res.render('admin/plugins/sso-yandex', {});
@@ -80,7 +82,7 @@
 						callback(null, {
 							uid: uid
 						});
-					});
+					});Z
 				};
 
 				User.getUidByEmail(email, function(err, uid) {
