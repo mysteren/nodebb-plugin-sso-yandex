@@ -1,5 +1,6 @@
 (function (module) {
 	'use strict';
+	/* globals require, module */
 
 	const User = require.main.require('./src/user'),
 		meta = require.main.require('./src/meta'),
@@ -22,6 +23,7 @@
 			id: process.env.SSO_YANDEX_CLIENT_ID || undefined,
 			secret: process.env.SSO_YANDEX_CLIENT_SECRET || undefined,
 			autoconfirm: 0,
+			// style: 'light',
 			disableRegistration: false,
 		},
 	};
@@ -37,6 +39,16 @@
 			});
 		});
 
+
+		// function render(req, res, next) {
+		// 	res.render('admin/plugins/sso-yandex', {});
+		// }
+
+		// data.router.get('/admin/plugins/sso-yandex', data.middleware.admin.buildHeader, render);
+		// data.router.get('/api/admin/plugins/sso-yandex', render);
+
+		// callback();
+
 		meta.settings.get('sso-yandex', (_, loadedSettings) => {
 			if (loadedSettings.id) {
 				Yandex.settings.id = loadedSettings.id;
@@ -45,6 +57,7 @@
 				Yandex.settings.secret = loadedSettings.secret;
 			}
 			Yandex.settings.autoconfirm = loadedSettings.autoconfirm === 'on';
+			// Yandex.settings.style = loadedSettings.style;
 			Yandex.settings.disableRegistration = loadedSettings.disableRegistration === 'on';
 			callback();
 		});
@@ -74,6 +87,7 @@
 					icons: {
 						svg: `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 26 26"><path fill="#fc3f1d" d="M13 26c7.18 0 13-5.82 13-13S20.18 0 13 0 0 5.82 0 13s5.82 13 13 13z"></path><path fill="#fff" d="M17.15 20.28h-2.58V7.518h-1.149c-2.101 0-3.206 1.062-3.206 2.633 0 1.787.769 2.61 2.34 3.672l1.3.867-3.738 5.59H7.334l3.358-4.99c-1.932-1.374-3.011-2.728-3.011-4.987 0-2.85 1.971-4.778 5.73-4.778h3.738l.001 14.755z"></path></svg>`,
 					},
+					// scope: 'https://www.yandexapis.com/auth/userinfo.profile https://www.yandexapis.com/auth/userinfo.email'
 					labels: {
 						login: '[[yandexsso:sign-in]]',
 						register: '[[yandexsso:sign-up]]',

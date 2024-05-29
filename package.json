@@ -1,11 +1,11 @@
 {
   "name": "nodebb-plugin-sso-yandex",
-  "version": "1.0.2",
+  "version": "2.0.1",
   "description": "NodeBB Yandex SSO",
   "main": "library.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/julianlam/nodebb-plugin-sso-yandex"
+    "url": "https://github.com/mysteren/nodebb-plugin-sso-yandex"
   },
   "keywords": [
     "nodebb",
@@ -16,40 +16,37 @@
     "registration"
   ],
   "author": {
-    "name": "Julian Lam",
-    "email": "julian@nodebb.org"
+    "name": "TimofeyC",
+    "email": "mysterenct@gmail.com"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged",
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+    }
+  },
+  "lint-staged": {
+    "*.js": [
+      "eslint --fix",
+      "git add"
+    ]
   },
   "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/julianlam/nodebb-plugin-sso-yandex/issues"
+  "nbbpm": {
+    "compatibility": "^3.2.0"
   },
   "dependencies": {
     "passport-yandex": "^0.0.3"
   },
-  "nbbpm": {
-    "compatibility": "^0.6.0"
+  "devDependencies": {
+    "@commitlint/cli": "19.3.0",
+    "@commitlint/config-angular": "19.3.0",
+    "eslint": "9.x",
+    "eslint-config-nodebb": "0.2.1",
+    "eslint-plugin-import": "2.x",
+    "husky": "9.0.11",
+    "lint-staged": "15.2.5"
   },
-  "gitHead": "9cd9ea7d7d89df822e28ecea738c19e2263d3251",
-  "homepage": "https://github.com/julianlam/nodebb-plugin-sso-yandex",
-  "_id": "nodebb-plugin-sso-yandex@1.0.1",
-  "scripts": {},
-  "_shasum": "125c0e675584cd089898156457a7858921750e61",
-  "_from": "nodebb-plugin-sso-yandex@latest",
-  "_npmVersion": "2.0.0",
-  "_npmUser": {
-    "name": "julianlam",
-    "email": "julian@designcreateplay.com"
-  },
-  "maintainers": [
-    {
-      "name": "julianlam",
-      "email": "julian@designcreateplay.com"
-    }
-  ],
-  "dist": {
-    "shasum": "125c0e675584cd089898156457a7858921750e61",
-    "tarball": "http://registry.npmjs.org/nodebb-plugin-sso-yandex/-/nodebb-plugin-sso-yandex-1.0.1.tgz"
-  },
-  "directories": {},
-  "_resolved": "https://registry.npmjs.org/nodebb-plugin-sso-yandex/-/nodebb-plugin-sso-yandex-1.0.1.tgz"
+
+  "scripts": {}
 }

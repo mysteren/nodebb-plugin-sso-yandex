@@ -4,7 +4,7 @@ NodeBB Plugin that allows users to login/register via their Yandex account.
 
 ## Installation
 
-    npm install nodebb-plugin-sso-yandex2
+    npm install nodebb-plugin-sso-yandex
 
 ## Configuration
 
