@@ -17,7 +17,6 @@
 		}
 	});
 
-	const authenticationController = require.main.require('./src/controllers/authentication');
 
 	const Yandex = {
 		settings: {
@@ -64,9 +63,7 @@
 						if (err) {
 							return done(err);
 						}
-						authenticationController.onSuccessfulLogin(req, user.uid, (err) => {
-							done(err, !err ? user : null);
-						});
+						done(err, !err ? user : null);
 					});
 				}));
 
@@ -89,7 +86,10 @@
 		});
 	};
 
-	Yandex.login = function (yandexid, handle, email, picture, callback) {
+	Yandex.login = function (yandexid, username, email, picture, callback) {
+
+		const autoConfirm = Yandex.settings.autoconfirm;
+
 		Yandex.getUidByYandexId(yandexid, function (err, uid) {
 			if (err) {
 				return callback(err);
@@ -102,23 +102,23 @@
 				});
 			} else {
 				// New User
-				const success = function (uid) {
-					meta.settings.get('sso-yandex', function (err, settings) {
-						const autoConfirm = settings && settings['autoconfirm'] === "on" ? 1 : 0;
-						User.setUserField(uid, 'email:confirmed', autoConfirm);
-						// Save yandex-specific information to the user
-						User.setUserField(uid, 'yandexid', yandexid);
-						db.setObjectField('yandexid:uid', yandexid, uid);
+				const success = async (uid) => {
+					if (autoConfirm) {
+						await User.setUserField(uid, 'email', email);
+						await User.email.confirmByUid(uid);
+					}
+					// Save google-specific information to the user
+					User.setUserField(uid, 'yandexid', yandexid);
+					db.setObjectField('yandexid:uid', yandexid, uid);
 
-						// Save their photo, if present
-						if (picture) {
-							User.setUserField(uid, 'uploadedpicture', picture);
-							User.setUserField(uid, 'picture', picture);
-						}
+					// Save their photo, if present
+					if (picture) {
+						User.setUserField(uid, 'uploadedpicture', picture);
+						User.setUserField(uid, 'picture', picture);
+					}
 
-						callback(null, {
-							uid: uid
-						});
+					callback(null, {
+						uid: uid,
 					});
 				};
 
@@ -128,7 +128,12 @@
 					}
 
 					if (!uid) {
-						User.create({ username: handle, email: email }, (err, uid) => {
+
+						// Abort user creation if registration via SSO is restricted
+						if (Yandex.settings.disableRegistration) {
+							return callback(new Error('[[error:sso-registration-disabled, Yandex]]'));
+						}
+						User.create({ username, email: !autoConfirm ? email : undefined }, (err, uid) => {
 							if (err) {
 								return callback(err);
 							}
@@ -162,12 +167,17 @@
 		callback(null, custom_header);
 	}
 
-	Yandex.deleteUserData = function (uid, callback) {
+	Yandex.deleteUserData = function (data, callback) {
+		const { uid } = data
+
 		async.waterfall([
 			async.apply(User.getUserField, uid, 'yandexid'),
 			function (oAuthIdToDelete, next) {
 				db.deleteObjectField('yandexid:uid', oAuthIdToDelete, next);
-			}
+			},
+			function (next) {
+				db.deleteObjectField(`user:${uid}`, 'yandexid', next);
+			},
 		], (err) => {
 			if (err) {
 				winston.error('[sso-yandex] Could not remove OAuthId data for uid ' + uid + '. Error: ' + err);
