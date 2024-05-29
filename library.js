@@ -9,13 +9,15 @@
 		nconf = require.main.require('nconf'),
 		async = require.main.require('async');
 
-	var constants = Object.freeze({
+	const constants = Object.freeze({
 		'name': "Yandex",
 		'admin': {
 			'route': '/plugins/sso-yandex',
 			'icon': 'icon-yandex'
 		}
 	});
+
+	const authenticationController = require.main.require('./src/controllers/authentication');
 
 	const Yandex = {
 		settings: {
@@ -62,7 +64,9 @@
 						if (err) {
 							return done(err);
 						}
-						done(null, user);
+						authenticationController.onSuccessfulLogin(req, user.uid, (err) => {
+							done(err, !err ? user : null);
+						});
 					});
 				}));
 
@@ -98,9 +102,9 @@
 				});
 			} else {
 				// New User
-				var success = function (uid) {
+				const success = function (uid) {
 					meta.settings.get('sso-yandex', function (err, settings) {
-						var autoConfirm = settings && settings['autoconfirm'] === "on" ? 1 : 0;
+						const autoConfirm = settings && settings['autoconfirm'] === "on" ? 1 : 0;
 						User.setUserField(uid, 'email:confirmed', autoConfirm);
 						// Save yandex-specific information to the user
 						User.setUserField(uid, 'yandexid', yandexid);
@@ -115,16 +119,16 @@
 						callback(null, {
 							uid: uid
 						});
-					}); Z
+					});
 				};
 
-				User.getUidByEmail(email, function (err, uid) {
+				User.getUidByEmail(email, (err, uid) => {
 					if (err) {
 						return callback(err);
 					}
 
 					if (!uid) {
-						User.create({ username: handle, email: email }, function (err, uid) {
+						User.create({ username: handle, email: email }, (err, uid) => {
 							if (err) {
 								return callback(err);
 							}
@@ -140,7 +144,7 @@
 	};
 
 	Yandex.getUidByYandexId = function (yandexid, callback) {
-		db.getObjectField('yandexid:uid', yandexid, function (err, uid) {
+		db.getObjectField('yandexid:uid', yandexid, (err, uid) => {
 			if (err) {
 				return callback(err);
 			}
@@ -164,7 +168,7 @@
 			function (oAuthIdToDelete, next) {
 				db.deleteObjectField('yandexid:uid', oAuthIdToDelete, next);
 			}
-		], function (err) {
+		], (err) => {
 			if (err) {
 				winston.error('[sso-yandex] Could not remove OAuthId data for uid ' + uid + '. Error: ' + err);
 				return callback(err);
