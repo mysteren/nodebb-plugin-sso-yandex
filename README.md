@@ -1,4 +1,6 @@
 # NodeBB Yandex SSO
+[![npm version](https://badge.fury.io/js/nodebb-plugin-sso-yandex2.svg?nocache=1)](https://badge.fury.io/js/nodebb-plugin-sso-yandex2)
+[![Downloads](https://img.shields.io/npm/dm/nodebb-plugin-sso-yandex2.svg)](nodebb-plugin-sso-yandex2)
 
 NodeBB Plugin that allows users to login/register via their Yandex account.
 
