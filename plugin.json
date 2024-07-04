@@ -14,6 +14,7 @@
 	"hooks": [
 		{ "hook": "static:app.load", "method": "init" },
 		{ "hook": "filter:auth.init", "method": "getStrategy" },
+		{ "hook": "filter:auth.list", "method": "getAssociation" },
 		{ "hook": "filter:admin.header.build", "method": "addMenuItem" },
 		{ "hook": "static:user.delete", "method": "deleteUserData" }
 	],

@@ -1,7 +1,8 @@
-.icon-yandex{
-    width: 100px;
-    height: 38px;
+.icon-yandex::before{
+    content: "__";
+    aspect-ratio: 1;
     background: no-repeat center url(plugins/nodebb-plugin-sso-yandex2/static/images/logo_yandex.svg);
     margin: 3px 0 0;
     background-size: contain;
+    color: rgba(0,0,0,0);
 }

@@ -1,6 +1,6 @@
 {
   "name": "nodebb-plugin-sso-yandex2",
-  "version": "2.0.4",
+  "version": "2.1.1",
   "description": "NodeBB Yandex SSO",
   "main": "library.js",
   "repository": {
@@ -41,11 +41,11 @@
   "devDependencies": {
     "@commitlint/cli": "19.3.0",
     "@commitlint/config-angular": "19.3.0",
-    "eslint": "8.x",
+    "eslint": "9.x",
     "eslint-config-nodebb": "0.2.1",
     "eslint-plugin-import": "2.x",
     "husky": "9.0.11",
-    "lint-staged": "15.2.5"
+    "lint-staged": "15.2.7"
   },
   "scripts": {}
 }
