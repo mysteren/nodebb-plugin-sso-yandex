@@ -1,6 +1,6 @@
 {
   "name": "nodebb-plugin-sso-yandex2",
-  "version": "2.1.1",
+  "version": "2.1.2",
   "description": "NodeBB Yandex SSO",
   "main": "library.js",
   "repository": {
@@ -33,7 +33,7 @@
   },
   "license": "MIT",
   "nbbpm": {
-    "compatibility": "^3.2.0"
+    "compatibility": "^3.2.0 || ^4.x"
   },
   "dependencies": {
     "passport-yandex": "^0.0.5"
